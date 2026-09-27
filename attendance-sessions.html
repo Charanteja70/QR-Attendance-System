@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Attendance Sessions</title>
+</head>
+<body>
+
+    <h1>Attendance Reports</h1>
+    <h2>Select a Class Session</h2>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Class Name</th>
+            <th>Subject</th>
+            <th>Action</th>
+        </tr>
+
+        <tr th:each="classSession : ${sessions}">
+            <td th:text="${classSession.className}">Class Name</td>
+            <td th:text="${classSession.subject}">Subject</td>
+            <td>
+                <a th:href="@{/attendance-report(sessionId=${classSession.id})}">
+                    View Report
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <a href="/teacher-dashboard">Back to Dashboard</a>
+
+</body>
+</html>

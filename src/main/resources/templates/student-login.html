@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login | QR Attend</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #172554, #1e3a8a);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 38px;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            text-align: center;
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1e40af;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 25px;
+            line-height: 2.4;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .register-link {
+            color: #059669 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="icon">🎓</div>
+
+    <h1>Student Login</h1>
+
+    <p class="subtitle">
+        Login to access your attendance account.
+    </p>
+
+    <p class="message" th:if="${message}" th:text="${message}"></p>
+
+    <form action="/student-login" method="post">
+
+        <label for="rollNumber">Roll Number</label>
+        <input type="text"
+               id="rollNumber"
+               name="rollNumber"
+               placeholder="Enter your roll number"
+               required>
+
+        <label for="password">Password</label>
+        <input type="password"
+               id="password"
+               name="password"
+               placeholder="Enter your password"
+               required>
+
+        <button type="submit">Login →</button>
+
+    </form>
+
+    <div class="links">
+        <p>Don't have an account?</p>
+        <a href="/register-student" class="register-link">
+            📝 Student Registration
+        </a>
+        <br>
+        <a href="/student-status">
+            🔍 Check Registration Status
+        </a>
+        <br>
+        <a href="/">← Back to Home</a>
+    </div>
+
+</div>
+
+</body>
+</html>

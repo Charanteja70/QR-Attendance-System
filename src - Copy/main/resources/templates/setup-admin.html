@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create First Admin</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .setup-box {
+            background: white;
+            padding: 35px;
+            width: 340px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .note {
+            font-size: 13px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-box">
+        <h2>Create First Admin</h2>
+
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+
+        <form action="/setup-admin" method="post">
+            <input type="text" name="username"
+                   placeholder="Admin Username" required>
+
+            <input type="password" name="password"
+                   placeholder="Create Strong Password" required>
+
+            <input type="password" name="confirmPassword"
+                   placeholder="Confirm Password" required>
+
+            <p class="note">
+                Use at least 12 characters with uppercase,
+                lowercase, a number, and a special character.
+            </p>
+
+            <button type="submit">Create Admin Account</button>
+        </form>
+    </div>
+</body>
+</html>

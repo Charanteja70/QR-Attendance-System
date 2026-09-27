@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+    <h1>Admin Dashboard</h1>
+
+    <h2>Teacher Management</h2>
+
+    <a href="/add-teacher">
+        <button>Add New Teacher</button>
+    </a>
+
+    <br><br>
+
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Teacher ID</th>
+            <th>Teacher Name</th>
+        </tr>
+
+        <tr th:each="teacher : ${teachers}">
+            <td th:text="${teacher.teacherId}"></td>
+            <td th:text="${teacher.teacherName}"></td>
+        </tr>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            color: #15803d;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>Student Registration</h2>
+
+    <form th:action="@{/register-student}" method="post">
+
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" name="studentName"
+               placeholder="Enter your full name" required>
+
+        <label for="rollNumber">Register Number</label>
+        <input type="text" id="rollNumber" name="rollNumber"
+               placeholder="Enter your register number" required>
+
+        <label for="className">Class</label>
+        <input type="text" id="className" name="className"
+               placeholder="Enter your class" required>
+
+        <label for="department">Department</label>
+        <input type="text" id="department" name="department"
+               placeholder="Enter your department" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               placeholder="Create a password" required>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div class="message" th:if="${message}" th:text="${message}"></div>
+
+    <div class="links">
+        <a th:href="@{/student-login}">Already registered? Login</a>
+        <br><br>
+        <a th:href="@{/}">Back to Home</a>
+    </div>
+
+</div>
+</body>
+</html>

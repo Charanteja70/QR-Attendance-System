@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Approval Requests</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #071426, #102b50);
+            min-height: 100vh;
+            padding: 30px 15px;
+            color: #102b50;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+            color: #102b50;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #eff6ff;
+            color: #1e40af;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 7px;
+            color: white;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .approve {
+            background: #16a34a;
+        }
+
+        .reject {
+            background: #dc2626;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px 15px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #cbd5e1;
+            margin-top: 25px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- PAGE HEADER -->
+    <div class="header">
+        <h1>🎓 Student Approval Requests</h1>
+        <p>Review student registrations and approve or reject requests.</p>
+
+        <a href="/teacher-dashboard" class="back-btn">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <!-- PENDING STUDENT REQUESTS -->
+    <div class="card">
+
+        <h2>Pending Registrations</h2>
+
+        <div class="table-wrapper"
+             th:if="${students != null and !students.isEmpty()}">
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Register Number</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="student : ${students}">
+
+                    <td th:text="${student.rollNumber}">
+                        Register Number
+                    </td>
+
+                    <td th:text="${student.studentName}">
+                        Student Name
+                    </td>
+
+                    <td th:text="${student.department}">
+                        Department
+                    </td>
+
+                    <td>
+                        <span class="status"
+                              th:text="${student.status}">
+                            PENDING
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+
+                            <!-- APPROVE FORM -->
+                            <form th:action="@{/approve-student/{id}(id=${student.id})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="btn approve">
+                                    ✓ Approve
+                                </button>
+
+                            </form>
+
+                            <!-- REJECT FORM -->
+                            <form th:action="@{/reject-student/{id}(id=${student.id})}"
+                                  method="post">
+
+                                <button type="submit"
+                                        class="btn reject">
+                                    ✕ Reject
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- NO PENDING REQUESTS -->
+        <div class="empty"
+             th:if="${students == null or students.isEmpty()}">
+
+            <h3>🎉 No Pending Requests</h3>
+            <p>There are no student registrations waiting for approval.</p>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        QR Attendance System | Student Management
+    </div>
+
+</div>
+
+</body>
+</html>

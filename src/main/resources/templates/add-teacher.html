@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Teacher</title>
+    <meta charset="UTF-8">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 35px;
+            width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #1e40af;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Register New Teacher</h2>
+
+        <p class="error"
+           th:if="${error}"
+           th:text="${error}"></p>
+
+        <p class="success"
+           th:if="${message}"
+           th:text="${message}"></p>
+
+        <form action="/add-teacher" method="post">
+
+            <label>Teacher ID:</label>
+            <input type="text" name="teacherId" required>
+
+            <label>Teacher Name:</label>
+            <input type="text" name="teacherName" required>
+
+            <label>Password:</label>
+            <input type="password" name="password"
+                   minlength="12" required>
+
+            <button type="submit">Register Teacher</button>
+        </form>
+
+        <a href="/admin-dashboard">Back to Dashboard</a>
+    </div>
+</body>
+</html>

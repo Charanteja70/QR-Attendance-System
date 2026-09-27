@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start New Class | QR Attendance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f3f6fc;
+            color: #1e293b;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .heading p {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 25px;
+        }
+
+        .info-card, .form-card {
+            background: white;
+            border-radius: 18px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(15,23,42,0.06);
+        }
+
+        .info-card {
+            background: linear-gradient(145deg, #4f46e5, #3730a3);
+            color: white;
+        }
+
+        .icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 25px;
+        }
+
+        .info-card h2 {
+            font-size: 23px;
+            margin-bottom: 15px;
+        }
+
+        .info-card p {
+            line-height: 1.7;
+            color: #e0e7ff;
+            font-size: 14px;
+        }
+
+        .info-list {
+            margin-top: 30px;
+            list-style: none;
+        }
+
+        .info-list li {
+            margin: 18px 0;
+            font-size: 14px;
+        }
+
+        .form-card h2 {
+            font-size: 23px;
+            margin-bottom: 8px;
+        }
+
+        .form-card .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #dbe2ef;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #3730a3;
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 35px;
+        }
+
+        @media (max-width: 700px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                margin: 25px auto;
+            }
+
+            .heading h1 {
+                font-size: 27px;
+            }
+
+            .info-card, .form-card {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">QR Attendance</div>
+        <a href="/teacher-dashboard" class="back-btn">← Dashboard</a>
+    </nav>
+
+    <div class="container">
+
+        <div class="heading">
+            <h1>Start a New Class</h1>
+            <p>Create a class session and generate a QR code for student attendance.</p>
+        </div>
+
+        <div class="content">
+
+            <div class="info-card">
+                <div class="icon">📚</div>
+                <h2>Manage Your Class</h2>
+                <p>
+                    Create a new attendance session in just a few steps.
+                    Students can scan the QR code to mark their attendance.
+                </p>
+
+                <ul class="info-list">
+                    <li>✓ Create a new class session</li>
+                    <li>✓ Generate a QR attendance code</li>
+                    <li>✓ Track student attendance</li>
+                    <li>✓ View attendance reports</li>
+                </ul>
+            </div>
+
+            <div class="form-card">
+                <h2>Class Details</h2>
+                <p class="subtitle">Enter the details to start your class.</p>
+
+                <form action="/start-class" method="post">
+
+                    <div class="form-group">
+                        <label for="className">Class Name</label>
+                        <input
+                            type="text"
+                            id="className"
+                            name="className"
+                            placeholder="e.g. CSE - Section A"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            placeholder="e.g. Java Programming"
+                            required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Start Class →
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            QR Attendance System | Teacher Portal
+        </div>
+
+    </div>
+
+</body>
+</html>
