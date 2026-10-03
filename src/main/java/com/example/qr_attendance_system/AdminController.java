@@ -1,4 +1,3 @@
-
 package com.example.qr_attendance_system;
 
 import jakarta.servlet.http.HttpSession;
@@ -46,18 +45,26 @@ public class AdminController {
     }
 
     @GetMapping("/admin-dashboard")
-    public String adminDashboard(HttpSession session) {
+    public String adminDashboard(
+            HttpSession session,
+            Model model) {
+
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/admin-login";
         }
+
+        model.addAttribute("teachers", teacherRepository.findAll());
+
         return "admin-dashboard";
     }
 
     @GetMapping("/add-teacher")
     public String addTeacherPage(HttpSession session) {
+
         if (!"ADMIN".equals(session.getAttribute("role"))) {
             return "redirect:/admin-login";
         }
+
         return "add-teacher";
     }
 
@@ -80,12 +87,16 @@ public class AdminController {
 
         if (!password.matches(
                 "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{12,}$")) {
-            model.addAttribute("error",
+
+            model.addAttribute(
+                    "error",
                     "Password must be at least 12 characters with uppercase, lowercase, number and special character.");
+
             return "add-teacher";
         }
 
         Teacher teacher = new Teacher();
+
         teacher.setTeacherId(teacherId);
         teacher.setTeacherName(teacherName);
         teacher.setPassword(passwordEncoder.encode(password));
@@ -93,6 +104,7 @@ public class AdminController {
         teacherRepository.save(teacher);
 
         model.addAttribute("message", "Teacher added successfully");
+
         return "add-teacher";
     }
 
