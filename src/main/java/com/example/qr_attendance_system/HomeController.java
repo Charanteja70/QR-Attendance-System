@@ -1,4 +1,3 @@
-
 package com.example.qr_attendance_system;
 
 import jakarta.servlet.http.HttpSession;
@@ -150,8 +149,9 @@ public class HomeController {
             classSessionRepository.save(session);
         }
 
+        // Railway public URL for student QR scanning
         String qrText =
-                "http://10.0.14.199:8080/scan?sessionId="
+                "https://kare-attendance.up.railway.app/scan?sessionId="
                 + session.getId()
                 + "&token="
                 + session.getQrToken();
