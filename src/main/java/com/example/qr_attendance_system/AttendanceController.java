@@ -55,7 +55,9 @@ public class AttendanceController {
             return "attendance-result";
         }
 
-        if (!LocalDateTime.now().isBefore(classSession.getQrExpiry())) {
+        if (classSession.getQrExpiry() == null
+                || !LocalDateTime.now().isBefore(
+                        classSession.getQrExpiry())) {
             model.addAttribute("message", "QR code has expired");
             return "attendance-result";
         }
@@ -75,7 +77,7 @@ public class AttendanceController {
             @RequestParam Long sessionId,
             @RequestParam String token,
             @RequestParam String rollNumber,
-            @RequestParam String deviceId,
+            @RequestParam(required = false) String deviceId,
             Model model) {
 
         ClassSession classSession = classSessionRepository
@@ -99,19 +101,26 @@ public class AttendanceController {
             return "attendance-result";
         }
 
-        if (!LocalDateTime.now().isBefore(classSession.getQrExpiry())) {
+        if (classSession.getQrExpiry() == null
+                || !LocalDateTime.now().isBefore(
+                        classSession.getQrExpiry())) {
             model.addAttribute("message", "QR code has expired");
             return "attendance-result";
         }
 
+        // Check the device ID received from the attendance form.
         if (deviceId == null || deviceId.trim().isEmpty()) {
             model.addAttribute("message",
-                    "Device verification failed. Please try again.");
+                    "Device ID is missing. Refresh the attendance page "
+                    + "and try again.");
             return "attendance-result";
         }
 
+        deviceId = deviceId.trim();
+        rollNumber = rollNumber.trim();
+
         Student student = studentRepository
-                .findByRollNumber(rollNumber.trim())
+                .findByRollNumber(rollNumber)
                 .orElse(null);
 
         if (student == null) {
@@ -122,36 +131,39 @@ public class AttendanceController {
 
         if (!"APPROVED".equalsIgnoreCase(student.getStatus())) {
             model.addAttribute("message",
-                    "Your registration is not approved. Please contact your teacher.");
+                    "Your registration is not approved. "
+                    + "Please contact your teacher.");
             return "attendance-result";
         }
 
-        if (!student.getClassName().trim()
-                .equalsIgnoreCase(classSession.getClassName().trim())) {
+        if (student.getClassName() == null
+                || classSession.getClassName() == null
+                || !student.getClassName().trim()
+                        .equalsIgnoreCase(
+                                classSession.getClassName().trim())) {
             model.addAttribute("message",
                     "This student is not registered in this class.");
             return "attendance-result";
         }
 
-        // Check whether this student already marked attendance.
+        // Prevent duplicate attendance for the same student/session.
         if (attendanceRepository.existsByRollNumberAndSessionId(
                 student.getRollNumber(), sessionId)) {
 
             model.addAttribute("message",
                     "Attendance already marked for "
-                            + student.getStudentName());
+                    + student.getStudentName());
 
             return "attendance-result";
         }
 
-        // Check whether this device already marked attendance
-        // for another student in this session.
+        // Prevent one device from marking attendance for multiple students.
         if (attendanceRepository.existsByDeviceIdAndSessionId(
                 deviceId, sessionId)) {
 
             model.addAttribute("message",
                     "This device has already marked attendance "
-                            + "for this class session.");
+                    + "for this class session.");
 
             return "attendance-result";
         }
@@ -168,7 +180,7 @@ public class AttendanceController {
 
         model.addAttribute("message",
                 "Attendance marked successfully for "
-                        + student.getStudentName());
+                + student.getStudentName());
 
         return "attendance-result";
     }

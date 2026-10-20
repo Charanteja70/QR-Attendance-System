@@ -1,10 +1,9 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Mark Attendance</title>
 
     <style>
@@ -76,39 +75,22 @@
 
 <body>
 <div class="container">
-
     <h2>Mark Attendance</h2>
 
     <div class="info">
-        <p>
-            Class:
-            <strong th:text="${className}">Class Name</strong>
-        </p>
-
-        <p>
-            Subject:
-            <strong th:text="${subject}">Subject</strong>
-        </p>
+        <p>Class: <strong th:text="${className}">Class Name</strong></p>
+        <p>Subject: <strong th:text="${subject}">Subject</strong></p>
     </div>
 
     <form id="attendanceForm"
           th:action="@{/mark-attendance}"
           method="post">
 
-        <input type="hidden"
-               name="sessionId"
-               th:value="${sessionId}">
-
-        <input type="hidden"
-               name="token"
-               th:value="${token}">
-
-        <input type="hidden"
-               id="deviceId"
-               name="deviceId">
+        <input type="hidden" name="sessionId" th:value="${sessionId}">
+        <input type="hidden" name="token" th:value="${token}">
+        <input type="hidden" id="deviceId" name="deviceId">
 
         <label for="rollNumber">Register Number</label>
-
         <input type="text"
                id="rollNumber"
                name="rollNumber"
@@ -116,32 +98,42 @@
                required>
 
         <button type="submit">Submit Attendance</button>
-
     </form>
-
 </div>
 
 <script>
     function getDeviceId() {
-        let deviceId = localStorage.getItem("attendanceDeviceId");
+        try {
+            let deviceId = localStorage.getItem("attendanceDeviceId");
 
-        if (!deviceId) {
-            if (window.crypto && window.crypto.randomUUID) {
-                deviceId = window.crypto.randomUUID();
-            } else {
-                deviceId = "device-" +
-                    Date.now() + "-" +
-                    Math.random().toString(36).substring(2);
+            if (!deviceId) {
+                deviceId = (window.crypto && window.crypto.randomUUID)
+                    ? window.crypto.randomUUID()
+                    : "device-" + Date.now() + "-" +
+                      Math.random().toString(36).substring(2);
+
+                localStorage.setItem("attendanceDeviceId", deviceId);
             }
 
-            localStorage.setItem("attendanceDeviceId", deviceId);
+            return deviceId;
+        } catch (error) {
+            return "";
         }
-
-        return deviceId;
     }
 
-    document.getElementById("deviceId").value = getDeviceId();
+    document.getElementById("attendanceForm").addEventListener("submit", function (event) {
+        const deviceId = getDeviceId();
+
+        if (!deviceId) {
+            event.preventDefault();
+            alert("Unable to verify this device. Please enable browser storage and try again.");
+            return;
+        }
+
+        document.getElementById("deviceId").value = deviceId;
+    });
 </script>
 
 </body>
 </html>
+```

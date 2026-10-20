@@ -4,6 +4,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Local database credentials
+/src/main/resources/application.properties
+
 ### STS ###
 .apt_generated
 .classpath
@@ -30,4 +33,4 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.vscode/src/main/java/com/example/AttendanceController.java

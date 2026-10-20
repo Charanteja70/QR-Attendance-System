@@ -7,9 +7,7 @@
     <title>Student Registration</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: Arial, sans-serif;
@@ -19,6 +17,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
         .container {
@@ -63,9 +62,7 @@
             cursor: pointer;
         }
 
-        button:hover {
-            background: #1d4ed8;
-        }
+        button:hover { background: #1d4ed8; }
 
         .message {
             text-align: center;
@@ -108,9 +105,15 @@
         <input type="text" id="department" name="department"
                placeholder="Enter your department" required>
 
+        <label for="teacherId">Teacher ID</label>
+        <input type="text" id="teacherId" name="teacherId"
+               placeholder="Enter your teacher ID (e.g. 1 or 2)"
+               required>
+
         <label for="password">Password</label>
         <input type="password" id="password" name="password"
-               placeholder="Create a password" required>
+               placeholder="Create a password"
+               minlength="8" required>
 
         <button type="submit">Register</button>
 

@@ -9,22 +9,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 public class StudentController {
 
     private final StudentRepository studentRepository;
     private final AttendanceRepository attendanceRepository;
+    private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
 
     public StudentController(
             StudentRepository studentRepository,
             AttendanceRepository attendanceRepository,
+            TeacherRepository teacherRepository,
             PasswordEncoder passwordEncoder) {
 
         this.studentRepository = studentRepository;
         this.attendanceRepository = attendanceRepository;
+        this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -41,6 +43,7 @@ public class StudentController {
             @RequestParam String rollNumber,
             @RequestParam String className,
             @RequestParam String department,
+            @RequestParam String teacherId,
             @RequestParam String password,
             Model model) {
 
@@ -48,11 +51,13 @@ public class StudentController {
         String roll = rollNumber.trim();
         String studentClass = className.trim();
         String studentDepartment = department.trim();
+        String selectedTeacherId = teacherId.trim();
 
         if (name.isEmpty()
                 || roll.isEmpty()
                 || studentClass.isEmpty()
-                || studentDepartment.isEmpty()) {
+                || studentDepartment.isEmpty()
+                || selectedTeacherId.isEmpty()) {
 
             model.addAttribute("message",
                     "Please fill in all fields.");
@@ -63,6 +68,16 @@ public class StudentController {
         if (password == null || password.length() < 8) {
             model.addAttribute("message",
                     "Password must contain at least 8 characters.");
+
+            return "register-student";
+        }
+
+        Optional<Teacher> teacher =
+                teacherRepository.findByTeacherId(selectedTeacherId);
+
+        if (teacher.isEmpty()) {
+            model.addAttribute("message",
+                    "Invalid Teacher ID. Please check with your teacher.");
 
             return "register-student";
         }
@@ -80,6 +95,7 @@ public class StudentController {
         student.setRollNumber(roll);
         student.setClassName(studentClass);
         student.setDepartment(studentDepartment);
+        student.setTeacherId(selectedTeacherId);
         student.setPassword(passwordEncoder.encode(password));
         student.setStatus("PENDING");
 
@@ -222,15 +238,15 @@ public class StudentController {
             HttpSession httpSession,
             Model model) {
 
-        if (httpSession.getAttribute("teacherId") == null) {
+        String teacherId = (String) httpSession.getAttribute("teacherId");
+
+        if (teacherId == null) {
             return "redirect:/teacher-login";
         }
 
-        List<Student> pendingStudents = studentRepository.findAll()
-                .stream()
-                .filter(student -> "PENDING".equalsIgnoreCase(
-                        student.getStatus()))
-                .collect(Collectors.toList());
+        List<Student> pendingStudents =
+                studentRepository.findByTeacherIdAndStatus(
+                        teacherId, "PENDING");
 
         model.addAttribute("students", pendingStudents);
 
@@ -244,7 +260,9 @@ public class StudentController {
             @PathVariable Long id,
             HttpSession httpSession) {
 
-        if (httpSession.getAttribute("teacherId") == null) {
+        String teacherId = (String) httpSession.getAttribute("teacherId");
+
+        if (teacherId == null) {
             return "redirect:/teacher-login";
         }
 
@@ -254,9 +272,12 @@ public class StudentController {
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
 
-            student.setStatus("APPROVED");
+            if (teacherId.equals(student.getTeacherId())
+                    && "PENDING".equalsIgnoreCase(student.getStatus())) {
 
-            studentRepository.save(student);
+                student.setStatus("APPROVED");
+                studentRepository.save(student);
+            }
         }
 
         return "redirect:/student-requests";
@@ -269,7 +290,9 @@ public class StudentController {
             @PathVariable Long id,
             HttpSession httpSession) {
 
-        if (httpSession.getAttribute("teacherId") == null) {
+        String teacherId = (String) httpSession.getAttribute("teacherId");
+
+        if (teacherId == null) {
             return "redirect:/teacher-login";
         }
 
@@ -279,27 +302,14 @@ public class StudentController {
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
 
-            student.setStatus("REJECTED");
+            if (teacherId.equals(student.getTeacherId())
+                    && "PENDING".equalsIgnoreCase(student.getStatus())) {
 
-            studentRepository.save(student);
+                student.setStatus("REJECTED");
+                studentRepository.save(student);
+            }
         }
 
         return "redirect:/student-requests";
-    }
-
-    // ================= STUDENT LIST =================
-
-    @GetMapping("/students")
-    public String showStudents(
-            HttpSession httpSession,
-            Model model) {
-
-        if (httpSession.getAttribute("teacherId") == null) {
-            return "redirect:/teacher-login";
-        }
-
-        model.addAttribute("students", studentRepository.findAll());
-
-        return "students";
     }
 }

@@ -149,9 +149,9 @@ public class HomeController {
             classSessionRepository.save(session);
         }
 
-        // Railway public URL for student QR scanning
+        // QR URL for devices that can reach this computer
         String qrText =
-                "https://kare-attendance.up.railway.app/scan?sessionId="
+                "http://10.63.37.210:8080/scan?sessionId="
                 + session.getId()
                 + "&token="
                 + session.getQrToken();

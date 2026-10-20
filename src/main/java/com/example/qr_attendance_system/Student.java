@@ -15,6 +15,9 @@ public class Student {
     private String className;
     private String department;
 
+    // Teacher this student belongs to
+    private String teacherId;
+
     // Registration status: PENDING, APPROVED, or REJECTED
     private String status = "PENDING";
 
@@ -58,6 +61,14 @@ public class Student {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
     }
 
     public String getStatus() {
