@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -13,62 +13,72 @@
 
         body {
             font-family: Arial, sans-serif;
-            background: #f0f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background: #f2f5f9;
             margin: 0;
+            padding: 20px;
         }
 
         .container {
-            background: white;
-            width: 90%;
             max-width: 420px;
-            padding: 30px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         h2 {
             text-align: center;
-            color: #1e3a8a;
+            color: #1d3557;
         }
 
         .info {
-            text-align: center;
-            color: #555;
+            background: #eef5ff;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 20px;
+        }
+
+        .info p {
+            margin: 8px 0;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: bold;
         }
 
-        input {
+        input[type="text"] {
             width: 100%;
-            padding: 12px;
+            padding: 13px;
             margin-bottom: 18px;
-            border: 1px solid #ccc;
+            border: 1px solid #bbb;
             border-radius: 6px;
-            font-size: 15px;
+            font-size: 16px;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
+            padding: 14px;
             border: none;
             border-radius: 6px;
+            background: #1565c0;
+            color: white;
             font-size: 16px;
             cursor: pointer;
         }
 
-        button:hover {
-            background: #1d4ed8;
+        button:disabled {
+            background: #777;
+            cursor: wait;
+        }
+
+        .note {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -78,62 +88,109 @@
     <h2>Mark Attendance</h2>
 
     <div class="info">
-        <p>Class: <strong th:text="${className}">Class Name</strong></p>
-        <p>Subject: <strong th:text="${subject}">Subject</strong></p>
+        <p>
+            Class:
+            <strong th:text="${className}">Class Name</strong>
+        </p>
+
+        <p>
+            Subject:
+            <strong th:text="${subject}">Subject</strong>
+        </p>
     </div>
 
     <form id="attendanceForm"
           th:action="@{/mark-attendance}"
           method="post">
 
-        <input type="hidden" name="sessionId" th:value="${sessionId}">
-        <input type="hidden" name="token" th:value="${token}">
-        <input type="hidden" id="deviceId" name="deviceId">
+        <input type="hidden"
+               name="sessionId"
+               th:value="${sessionId}">
+
+        <input type="hidden"
+               name="token"
+               th:value="${token}">
+
+        <input type="hidden"
+               id="deviceId"
+               name="deviceId">
 
         <label for="rollNumber">Register Number</label>
+
         <input type="text"
                id="rollNumber"
                name="rollNumber"
                placeholder="Enter your register number"
+               autocomplete="off"
                required>
 
-        <button type="submit">Submit Attendance</button>
+        <button type="submit" id="submitButton">
+            Submit Attendance
+        </button>
+
+        <p class="note">
+            Open this page in your normal mobile browser.
+            Browser storage must be available for device verification.
+        </p>
     </form>
 </div>
 
 <script>
     function getDeviceId() {
+        const storageKey = "attendanceDeviceId";
+
         try {
-            let deviceId = localStorage.getItem("attendanceDeviceId");
+            let deviceId = localStorage.getItem(storageKey);
 
             if (!deviceId) {
-                deviceId = (window.crypto && window.crypto.randomUUID)
-                    ? window.crypto.randomUUID()
-                    : "device-" + Date.now() + "-" +
-                      Math.random().toString(36).substring(2);
+                if (window.crypto &&
+                    typeof window.crypto.randomUUID === "function") {
+                    deviceId = window.crypto.randomUUID();
+                } else {
+                    deviceId = "device-" +
+                        Date.now() + "-" +
+                        Math.random().toString(36).substring(2);
+                }
 
-                localStorage.setItem("attendanceDeviceId", deviceId);
+                localStorage.setItem(storageKey, deviceId);
+            }
+
+            // Verify that the browser can read the saved ID.
+            const savedId = localStorage.getItem(storageKey);
+
+            if (!savedId || savedId !== deviceId) {
+                return "";
             }
 
             return deviceId;
         } catch (error) {
+            console.error("Device storage error:", error);
             return "";
         }
     }
 
-    document.getElementById("attendanceForm").addEventListener("submit", function (event) {
-        const deviceId = getDeviceId();
+    document.getElementById("attendanceForm")
+        .addEventListener("submit", function (event) {
 
-        if (!deviceId) {
-            event.preventDefault();
-            alert("Unable to verify this device. Please enable browser storage and try again.");
-            return;
-        }
+            const deviceId = getDeviceId();
 
-        document.getElementById("deviceId").value = deviceId;
-    });
+            if (!deviceId) {
+                event.preventDefault();
+
+                alert(
+                    "Unable to verify this device. " +
+                    "Please enable site data in Chrome settings, " +
+                    "then reopen the QR link and try again."
+                );
+
+                return;
+            }
+
+            document.getElementById("deviceId").value = deviceId;
+
+            document.getElementById("submitButton").disabled = true;
+        });
 </script>
 
 </body>
 </html>
-```
