@@ -1,6 +1,7 @@
 package com.example.qr_attendance_system;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,17 +20,21 @@ public class HomeController {
     private final QrCodeService qrCodeService;
     private final TeacherRepository teacherRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String baseUrl;
 
     public HomeController(
             ClassSessionRepository classSessionRepository,
             QrCodeService qrCodeService,
             TeacherRepository teacherRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            @Value("${app.base-url:https://qr-attendance-system-1-88j1.onrender.com}")
+            String baseUrl) {
 
         this.classSessionRepository = classSessionRepository;
         this.qrCodeService = qrCodeService;
         this.teacherRepository = teacherRepository;
         this.passwordEncoder = passwordEncoder;
+        this.baseUrl = baseUrl.replaceAll("/+$", "");
     }
 
     @GetMapping("/")
@@ -149,9 +154,10 @@ public class HomeController {
             classSessionRepository.save(session);
         }
 
-        // QR URL for devices that can reach this computer
-        String qrText =
-                "http://10.63.37.210:8080/scan?sessionId="
+        // Use the public HTTPS URL so students can scan
+        // the QR code from mobile data or another Wi-Fi network.
+        String qrText = baseUrl
+                + "/scan?sessionId="
                 + session.getId()
                 + "&token="
                 + session.getQrToken();
@@ -160,9 +166,9 @@ public class HomeController {
                 qrCodeService.generateQrCode(qrText);
 
         long secondsLeft =
-                ChronoUnit.SECONDS.between(
+                Math.max(0, ChronoUnit.SECONDS.between(
                         LocalDateTime.now(),
-                        session.getQrExpiry());
+                        session.getQrExpiry()));
 
         model.addAttribute("className", session.getClassName());
         model.addAttribute("subject", session.getSubject());
